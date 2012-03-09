@@ -18,7 +18,7 @@
    :subname path
    :create true})
 
-(def db (db-with-path "/Users/ahinz/src/clojure/csv/db/contrib.sqlite3"))
+(def db (db-with-path "db/contrib.sqlite3"))
 
 (defremote get-total-contrib []
     (with-connection db
