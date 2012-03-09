@@ -22,10 +22,10 @@
                   [:h1 "Campaign Funding"]
                   [:h2 "Who's really paying your Philadelphia Politicians?"]]
                  [:div.right
-                  [:input { :type "text" :placeholder "Search Contributors and Politicians"}]
+                  [:input#search { :type "text" :placeholder "Search Contributors and Politicians"}]
                   ]]]
                [:div#subheader
                 [:div.content
-                 "In 2011 " [:span#count.number ""] " organizations gave over " [:span#total.number ""] " to our local politicans"]]
+                 "In 2011 " [:span#count.number ""] " organizations spent over " [:span#total.number ""] " in campaign contributions"]]
                [:div#wrapper
                 content]]))

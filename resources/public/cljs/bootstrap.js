@@ -12850,8 +12850,23 @@ mysite.client.main.fmti = function(a) {
 mysite.client.main.fmti$ = function(a) {
   return cljs.core.str.call(null, "$", mysite.client.main.fmti.call(null, a))
 };
+mysite.client.main.update_contributions = function(a, b) {
+  return fetch.remotes.remote_callback.call(null, "get-recipients", cljs.core.Vector.fromArray([a]), function(a) {
+    var d = cljs.core.seq.call(null, a);
+    if(cljs.core.truth_(d)) {
+      for(a = cljs.core.first.call(null, d);;) {
+        if(jayq.core.append.call(null, b, mysite.client.main.filer.call(null, a)), a = cljs.core.next.call(null, d), cljs.core.truth_(a)) {
+          d = a, a = cljs.core.first.call(null, d)
+        }else {
+          return null
+        }
+      }
+    }else {
+      return null
+    }
+  })
+};
 mysite.client.main.render = function() {
-  mysite.client.main.$content = jayq.core.$.call(null, "\ufdd0'#filers");
   var a = cljs.core.swap_BANG_.call(null, crate.core.group_id, cljs.core.inc);
   mysite.client.main.filer = function(b) {
     var c = cljs.core.nth.call(null, b, 0, null), d = cljs.core.nth.call(null, b, 1, null), b = cljs.core.nth.call(null, b, 2, null), c = crate.core.html.call(null, cljs.core.Vector.fromArray(["\ufdd0'li.filer", cljs.core.Vector.fromArray(["\ufdd0'ul", cljs.core.Vector.fromArray(["\ufdd0'h2", c]), cljs.core.Vector.fromArray(["\ufdd0'li.amount", mysite.client.main.fmti$.call(null, d), " (", mysite.client.main.fmti$.call(null, d / b), " per contribution)"]), cljs.core.Vector.fromArray(["\ufdd0'li.count", 
@@ -12860,23 +12875,14 @@ mysite.client.main.render = function() {
     return c
   };
   mysite.client.main.filer.prototype._crateGroup = a;
-  fetch.remotes.remote_callback.call(null, "get-total-contrib", cljs.core.Vector.fromArray([]), function(a) {
+  fetch.remotes.remote_callback.call(null, "get-total-contrib", cljs.core.Vector.fromArray([""]), function(a) {
     jayq.core.text.call(null, jayq.core.$.call(null, "\ufdd0'#total"), mysite.client.main.fmti$.call(null, "\ufdd0'total".call(null, a)));
     return jayq.core.text.call(null, jayq.core.$.call(null, "\ufdd0'#count"), mysite.client.main.fmti.call(null, "\ufdd0'count".call(null, a)))
   });
-  return fetch.remotes.remote_callback.call(null, "get-recipients", cljs.core.Vector.fromArray([]), function(a) {
-    var c = cljs.core.seq.call(null, a);
-    if(cljs.core.truth_(c)) {
-      for(a = cljs.core.first.call(null, c);;) {
-        if(jayq.core.append.call(null, mysite.client.main.$content, mysite.client.main.filer.call(null, a)), a = cljs.core.next.call(null, c), cljs.core.truth_(a)) {
-          c = a, a = cljs.core.first.call(null, c)
-        }else {
-          return null
-        }
-      }
-    }else {
-      return null
-    }
+  mysite.client.main.update_contributions.call(null, "", jayq.core.$.call(null, "\ufdd0'#filers"));
+  return jayq.core.bind.call(null, jayq.core.$.call(null, "\ufdd0'#search"), "change", function() {
+    jayq.core.$.call(null, "\ufdd0'#filers").empty();
+    return mysite.client.main.update_contributions.call(null, jayq.core.$.call(null, "\ufdd0'#search").val(), jayq.core.$.call(null, "\ufdd0'#filers"))
   })
 };
 jQuery.call(null, mysite.client.main.render);

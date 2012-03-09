@@ -20,16 +20,22 @@
 
 (def db (db-with-path "db/contrib.sqlite3"))
 
-(defremote get-total-contrib []
+(defremote get-total-contrib [filter]
+  (let [sqlfilter (if (or (nil? filter) (empty? filter))
+                    ""
+                    (str "WHERE FilerName LIKE \"%" filter "%\""))]
     (with-connection db
-      (with-query-results results ["select sum(CAST(Amount as Int)) as total, count(*) as count from campaign"]
-        (first results))))
+      (with-query-results results [(str "select sum(CAST(Amount as Int)) as total, count(*) as count from campaign " sqlfilter)]
+         (first results)))))
 
 (defn str-or [s s2]
   (if (empty? s) s2 s))
 
-(defremote get-recipients []
-  (with-connection db
-   (with-query-results results ["select FilerName, sum(CAST(Amount as Int)) as total, count(*) as count from campaign group by FilerName order by FilerName"]
-     (doall (map (fn [r] [(str-or (:filername r) "(Not Identified)") (:total r) (:count r)] ) results)))))
+(defremote get-recipients [filter]
+  (let [sqlfilter (if (or (nil? filter) (empty? filter))
+                    ""
+                    (str "WHERE FilerName LIKE \"%" filter "%\""))]
+   (with-connection db
+     (with-query-results results [(str "select FilerName, sum(CAST(Amount as Int)) as total, count(*) as count from campaign " sqlfilter " group by FilerName order by FilerName")]
+       (doall (map (fn [r] [(str-or (:filername r) "(Not Identified)") (:total r) (:count r)] ) results))))))
 
